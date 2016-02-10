@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item"
+    android:backgroundTintMode="multiply"
+    android:backgroundTint="@color/orange"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/all_songs_template_song_album_art"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/echo_album_art"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/all_songs_template_song_album_art"
+        android:layout_margin="@dimen/margin_thumbnail_big">
+
+        <TextView
+            android:id="@+id/all_songs_template_song_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="48"
+            android:maxLines="1"
+            android:text="Song Name"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/all_songs_template_song_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/all_songs_template_song_name"
+            android:maxLength="40"
+            android:maxLines="1"
+            android:text="Song Name"
+            android:textColor="@color/pink"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

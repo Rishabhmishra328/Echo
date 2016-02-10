@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navigation_drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="false"
+        android:background="@color/black">
+
+        <ImageView
+            android:id="@+id/login_color_navigation_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="#F00" />
+
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/login_user_image_navigation_drawer"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/pink" />
+
+        <TextView
+            android:id="@+id/login_username_navigation_drawer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/login_user_image_navigation_drawer"
+            android:layout_marginLeft="24dp"
+            android:text="User Name"
+            android:textSize="18dp" />
+
+        <ImageView
+            android:id="@+id/back_navigation_drawer"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="#00F" />
+
+        <ListView
+            android:id="@+id/list_view_navigation_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/login_color_navigation_drawer" />
+
+    </RelativeLayout>
+
+</DrawerLayout>

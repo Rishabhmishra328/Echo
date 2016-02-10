@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize">
+
+    <ImageView
+        android:id="@+id/puller_navigation_drawer"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/echo_logo" />
+
+</android.support.v7.widget.Toolbar>
