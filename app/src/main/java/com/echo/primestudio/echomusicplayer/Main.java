@@ -78,7 +78,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     public static SeekBar seekBar;
     public static android.os.Handler seekHandler = new android.os.Handler();
     public static Window window ;
-
+    public static barVisualization barViz ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +119,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         specialAlbumArt = (ImageView) findViewById(R.id.album_art_special_view);
         albumArtNowPlayingCurtain = (ImageView) findViewById(R.id.album_art_now_playing_curtain);
         seekBar = (SeekBar) findViewById(R.id.seek_bar_now_playing_curtain);
+        barViz = (barVisualization) findViewById(R.id.barVisualization_now_playing_curtain);
 
         //Initialisation
         albumArtNowPlayingCurtainWidth = albumArtNowPlayingCurtain.getMaxWidth();
@@ -836,6 +837,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                     public void onFftDataCapture(Visualizer visualizer,
                                                  byte[] bytes, int samplingRate) {
 
+                        barViz.updateVisualizer(bytes);
+
                     }
                 }, Visualizer.getMaxCaptureRate() / 2, true, true);
 
@@ -1006,6 +1009,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         }
 
 
+        //Visualization color
+        barVisualization.barVizPaint.setColor(Color.HSVToColor(new float[]{currentColor, 0.6f, 0.8f}));
+        barVisualization.barVizPaint.setAlpha(150);
 
 
         //Gradient color change
@@ -1020,19 +1026,12 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     }
 
 
-
     public static void changeDrawableColor(Drawable draw,int hue ,float sat ,float val){
 
         int setColor = Color.HSVToColor(new float[]{hue, sat, val});
         draw.setColorFilter(setColor, PorterDuff.Mode.MULTIPLY);
 
     }
-
-//    public void startService() {
-//        Intent serviceIntent = new Intent(Main.this, notificationService.class);
-//        serviceIntent.setAction(notificationService.START_FOREGROUND_ACTION);
-//        startService(serviceIntent);
-//    }
 
 
 }

@@ -158,8 +158,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:visibility="gone">
+        android:background="@color/white">
 
         <RelativeLayout
             android:id="@+id/time_tracker_now_playing_curtain"
@@ -299,8 +298,8 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/echo_album_art" />
 
-
         </RelativeLayout>
+
 
 
         <SeekBar
@@ -313,6 +312,14 @@
             android:progress="0"
             android:progressTint="@color/pink"
             android:thumb="@color/pink" />
+
+
+        <com.echo.primestudio.echomusicplayer.barVisualization
+            android:id="@+id/barVisualization_now_playing_curtain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/song_details_now_playing_curtain"
+            android:layout_alignParentBottom="true"/>
 
 
         <RelativeLayout

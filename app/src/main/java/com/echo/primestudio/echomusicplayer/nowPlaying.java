@@ -67,8 +67,8 @@ public class nowPlaying extends Activity {
             Main.player = MediaPlayer.create(context, songUri);
             Main.playButton.setBackgroundResource(R.drawable.pause);
             Main.playPauseNowPlayingDescription.setBackgroundResource(R.drawable.pause);
-//            Main.setupVisualizerFxAndUI();
-//            Main.songVisualizer.setEnabled(true);
+            Main.setupVisualizerFxAndUI();
+            Main.songVisualizer.setEnabled(true);
             Main.player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
