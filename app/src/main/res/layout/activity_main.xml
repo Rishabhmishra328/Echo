@@ -80,7 +80,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="false"
         android:layout_marginBottom="48dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="?android:attr/actionBarSize"
         android:background="@color/white"
         android:visibility="gone">
 

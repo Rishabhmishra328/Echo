@@ -61,7 +61,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     public static View special, navigationDrawer, nowPlayingCurtain, nowPlayingDescription ;
     public static ListView artistSongList, albumSongList, genreSongList, playlistSongList , allSongsLV ;
     public static ImageView albumArtSpecialList, playButton, nextButton, previousButton, repeatButton, shuffleButton, albumArtNowPlayingCurtain, playPauseNowPlayingDescription, specialAlbumArt;
-    public static TextView nowPlayingSongName, nowPlayingSongArtist, specialName, songNameNowPlayingDescription, songArtistNowPlayingDescription, currentTimeMin, currentTimeSec, maxTimeMin, maxTimeSec, currentTimeSeprator, totalTimeSeprator, timeSlash, songArtistAllSongsTemplate;
+    public static TextView nowPlayingSongName, nowPlayingSongArtist, songNameNowPlayingDescription, songArtistNowPlayingDescription, currentTimeMin, currentTimeSec, maxTimeMin, maxTimeSec, currentTimeSeprator, totalTimeSeprator, timeSlash, songArtistAllSongsTemplate;
     public static Cursor playlistListCursor, genreListCursor, albumListCursor, artistListCursor, currentCursor;
     public static int repeat = 0, shuffle = 0, albumArtNowPlayingCurtainWidth = 0;
     public static HashMap<Integer, String> map = new HashMap<>();
@@ -530,7 +530,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                                 artistListCursor.moveToPosition(position);
 
-                                specialName.setText(artistListCursor.getString(1));
 
                                 Cursor tableCursor = songPopulator.getArtistSongsCursor(getContext(), artistListCursor);
 
@@ -678,8 +677,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                                 genreListCursor.moveToPosition(position);
 
-                                specialName.setText(genreListCursor.getString(1));
-
                                 Cursor tableCursor = songPopulator.getGenreSongsCursor(getContext(), genreListCursor);
 
                                 listNoAlbumArtAdapter genreAdapter;
@@ -803,7 +800,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
 //        nowPlayingSongName.setTypeface(echoPrimaryTypeFace);
 //        nowPlayingSongArtist.setTypeface(echoPrimaryTypeFace);
-//        specialName.setTypeface(echoPrimaryTypeFace);
 //        songNameNowPlayingDescription.setTypeface(echoPrimaryTypeFace);
 //        songArtistNowPlayingDescription.setTypeface(echoPrimaryTypeFace);
 

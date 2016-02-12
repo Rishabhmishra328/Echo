@@ -46,7 +46,7 @@ public class listAdapter extends CursorAdapter {
         songTitle.setText( cursor.getString(3) ) ;
 //        songTitle.setTypeface(Main.echoPrimaryTypeFace);
         songArtist.setText(cursor.getString(2));
-        songArtist.setTypeface(Main.echoPrimaryTypeFace);
+//        songArtist.setTypeface(Main.echoPrimaryTypeFace);
 
         String albumArtPath = songPopulator.getAlbumArt( context , cursor.getString(5) ) ;
 
