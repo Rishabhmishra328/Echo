@@ -58,7 +58,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private static Toolbar appBar;
     private ViewPager classificationPager;
     private SlidingTabLayout classificationTabs;
-    public static View special, navigationDrawer, nowPlayingCurtain, nowPlayingDescription, specialViewExtraAppBar;
+
     public static ListView artistSongList, albumSongList, genreSongList, playlistSongList , allSongsLV ;
     public static ImageView albumArtSpecialList, playButton, nextButton, previousButton, repeatButton, shuffleButton, albumArtNowPlayingCurtain, playPauseNowPlayingDescription, specialAlbumArt;
     public static TextView nowPlayingSongName, nowPlayingSongArtist, specialName, songNameNowPlayingDescription, songArtistNowPlayingDescription, currentTimeMin, currentTimeSec, maxTimeMin, maxTimeSec, currentTimeSeprator, totalTimeSeprator, timeSlash, songArtistAllSongsTemplate;
@@ -540,7 +540,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 artistSongList.setAdapter(artistSongAdapter);
 
                                 albumArtSpecialList.setVisibility(View.GONE);
-                                specialViewExtraAppBar.setVisibility(View.VISIBLE);
+
 
 
                                 slideFromRight();
@@ -618,7 +618,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 }
 
 
-                                specialViewExtraAppBar.setVisibility(View.GONE);
+
 
                                 slideFromRight();
 
@@ -691,7 +691,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 genreSongList.setAdapter(genreAdapter);
 
                                 albumArtSpecialList.setVisibility(View.GONE);
-                                specialViewExtraAppBar.setVisibility(View.VISIBLE);
+
 
                                 slideFromRight();
 
@@ -760,7 +760,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 playlistSongList.setAdapter(playlistAdapter);
 
                                 albumArtSpecialList.setVisibility(View.VISIBLE);
-                                specialViewExtraAppBar.setVisibility(View.GONE);
+
 
                                 slideFromRight();
 
