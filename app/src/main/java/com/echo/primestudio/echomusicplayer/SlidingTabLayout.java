@@ -63,7 +63,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private SparseArray<String> mContentDescriptions = new SparseArray<String>();
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
-    private final SlidingTabStrip mTabStrip;
+    public static SlidingTabStrip mTabStrip;
 
     public SlidingTabLayout(Context context) {
         this(context, null);
@@ -106,7 +106,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * Sets the colors to be used for indicating the selected tab. These colors are treated as a
      * circular array. Providing one color will mean that all tabs are indicated with the same color.
      */
-    public void setSelectedIndicatorColors(int... colors) {
+    public static void setSelectedIndicatorColors(int... colors) {
         mTabStrip.setSelectedIndicatorColors(colors);
     }
 

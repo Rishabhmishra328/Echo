@@ -47,9 +47,9 @@ public class gridAlbumAdapter extends CursorAdapter {
             try {
 
                 Bitmap albumArtBitmap = BitmapFactory.decodeFile(albumArtPath) ;
-                Bitmap albumArtThumbnail = ThumbnailUtils.extractThumbnail(albumArtBitmap , 95 , 95) ;
+//                Bitmap albumArtThumbnail = ThumbnailUtils.extractThumbnail(albumArtBitmap , 99 , 99) ;
 
-                songAlbumArt.setImageBitmap(albumArtThumbnail);
+                songAlbumArt.setImageBitmap(albumArtBitmap);
 
             } catch (NullPointerException e) {
                 e.printStackTrace();

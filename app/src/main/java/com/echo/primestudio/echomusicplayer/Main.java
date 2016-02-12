@@ -1,7 +1,6 @@
 package com.echo.primestudio.echomusicplayer;
 
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
@@ -26,7 +24,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.internal.widget.TintManager;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -61,10 +58,10 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private static Toolbar appBar;
     private ViewPager classificationPager;
     private SlidingTabLayout classificationTabs;
-    public static View special, navigationDrawer, nowPlayingCurtain, nowPlayingDescription, specialViewExtraAppBar ;
-    public static ListView artistSongList, albumSongList, genreSongList, playlistSongList;
+    public static View special, navigationDrawer, nowPlayingCurtain, nowPlayingDescription, specialViewExtraAppBar;
+    public static ListView artistSongList, albumSongList, genreSongList, playlistSongList , allSongsLV ;
     public static ImageView albumArtSpecialList, playButton, nextButton, previousButton, repeatButton, shuffleButton, albumArtNowPlayingCurtain, playPauseNowPlayingDescription, specialAlbumArt;
-    public static TextView nowPlayingSongName, nowPlayingSongArtist, specialName, songNameNowPlayingDescription, songArtistNowPlayingDescription, currentTimeMin, currentTimeSec, maxTimeMin, maxTimeSec, currentTimeSeprator, totalTimeSeprator, timeSlash;
+    public static TextView nowPlayingSongName, nowPlayingSongArtist, specialName, songNameNowPlayingDescription, songArtistNowPlayingDescription, currentTimeMin, currentTimeSec, maxTimeMin, maxTimeSec, currentTimeSeprator, totalTimeSeprator, timeSlash, songArtistAllSongsTemplate;
     public static Cursor playlistListCursor, genreListCursor, albumListCursor, artistListCursor, currentCursor;
     public static int repeat = 0, shuffle = 0, albumArtNowPlayingCurtainWidth = 0;
     public static HashMap<Integer, String> map = new HashMap<>();
@@ -77,8 +74,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     public Boolean firstSong = true;
     public static SeekBar seekBar;
     public static android.os.Handler seekHandler = new android.os.Handler();
-    public static Window window ;
-    public static barVisualization barViz ;
+    public static Window window;
+    public static barVisualization barViz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +87,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         //Declarations
         nowPlayingCurtain = findViewById(R.id.now_playing_curtain);
         nowPlayingDescription = findViewById(R.id.now_playing_description);
-        specialViewExtraAppBar = findViewById(R.id.special_extra_app_bar);
         special = findViewById(R.id.special_view);
         navigationDrawer = findViewById(R.id.navigation_drawer);
+        allSongsLV = (ListView) findViewById(R.id.all_songs_lv);
         artistSongList = (ListView) findViewById(R.id.list_view_artist_songs);
         albumSongList = (ListView) findViewById(R.id.list_view_album_songs);
         genreSongList = (ListView) findViewById(R.id.list_view_genre_songs);
@@ -104,12 +101,12 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         nowPlayingSongName = (TextView) findViewById(R.id.current_song_name_now_playing_curtain);
         songNameNowPlayingDescription = (TextView) findViewById(R.id.song_name_now_playing_description);
         songArtistNowPlayingDescription = (TextView) findViewById(R.id.song_artist_now_playing_description);
-        specialName = (TextView) findViewById(R.id.special_name);
         currentTimeMin = (TextView) findViewById(R.id.current_time_min_now_playing_curtain);
         currentTimeSec = (TextView) findViewById(R.id.current_time_sec_now_playing_curtain);
         maxTimeMin = (TextView) findViewById(R.id.total_time_min_now_playing_curtain);
         maxTimeSec = (TextView) findViewById(R.id.total_time_sec_now_playing_curtain);
         nowPlayingSongArtist = (TextView) findViewById(R.id.current_song_artist_now_playing_curtain);
+        songArtistAllSongsTemplate = (TextView) findViewById(R.id.all_songs_template_song_artist);
         playButton = (ImageView) findViewById(R.id.play_pause_now_playing_curtain);
         playPauseNowPlayingDescription = (ImageView) findViewById(R.id.play_pause_now_playing_description);
         nextButton = (ImageView) findViewById(R.id.next_now_playing_curtain);
@@ -837,7 +834,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                     public void onFftDataCapture(Visualizer visualizer,
                                                  byte[] bytes, int samplingRate) {
 
-                        barViz.updateVisualizer(bytes);
+//                        barViz.updateVisualizer(bytes);
 
                     }
                 }, Visualizer.getMaxCaptureRate() / 2, true, true);
@@ -978,7 +975,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     public static void changeColor(int currentColor) {
 
         //Images color change
-        changeDrawableColor(playPauseNowPlayingDescription.getBackground(),currentColor,0.75f,0.55f);
+        changeDrawableColor(playPauseNowPlayingDescription.getBackground(), currentColor, 0.75f, 0.55f);
         changeDrawableColor(playButton.getBackground(), currentColor, 0.75f, 0.55f);
         changeDrawableColor(nextButton.getBackground(), currentColor, 0.8f, 0.8f);
         changeDrawableColor(previousButton.getBackground(), currentColor, 0.8f, 0.8f);
@@ -998,35 +995,47 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         timeSlash.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.4f, 0.6f}));
 
         //List color changes
-
+        SlidingTabLayout.setSelectedIndicatorColors(Color.HSVToColor(new float[]{currentColor, 0.8f, 0.8f}));
 
         //Application morphing
         appBar.setBackgroundColor(Color.HSVToColor(new float[]{currentColor, 0.5f, 0.9f}));
-//        statusBar.setBackgroundDrawable(new ColorDrawable(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.6f})));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.6f}));
         }
+
+        //All songs Thumb
+//        allSongsLV.setCacheColorHint(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.6f}));
 
 
         //Visualization color
         barVisualization.barVizPaint.setColor(Color.HSVToColor(new float[]{currentColor, 0.6f, 0.8f}));
         barVisualization.barVizPaint.setAlpha(150);
 
+        //Main marker color
+
+
+        //Changing Template Color
+        if (songArtistAllSongsTemplate == null)
+            Log.d("songArtist all songs", "is NULL");
+        else
+            songArtistAllSongsTemplate.setTextColor(Color.HSVToColor(255, new float[]{currentColor, 0.6f, 0.8f}));
+
 
         //Gradient color change
-        GradientDrawable gradDrawable = new GradientDrawable(GradientDrawable.Orientation.TR_BL,new int[]{Color.HSVToColor(new float[]{currentColor, 0.75f, 0.75f}),Color.HSVToColor(new float[]{currentColor, 0f, 1f})});
+        GradientDrawable gradDrawable = new GradientDrawable(GradientDrawable.Orientation.TR_BL, new int[]{Color.HSVToColor(new float[]{currentColor, 0.75f, 0.75f}), Color.HSVToColor(new float[]{currentColor, 0f, 1f})});
         gradDrawable.setCornerRadius(0.5f);
         nowPlayingCurtain.setBackground(gradDrawable);
 
         //SeekBar color change
-        seekBar.getProgressDrawable().setColorFilter( Color.HSVToColor(new float[]{currentColor, 0.75f, 0.55f}) , PorterDuff.Mode.MULTIPLY );
+        seekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.55f}), PorterDuff.Mode.MULTIPLY);
 
 
     }
 
 
-    public static void changeDrawableColor(Drawable draw,int hue ,float sat ,float val){
+    public static void changeDrawableColor(Drawable draw, int hue, float sat, float val) {
 
         int setColor = Color.HSVToColor(new float[]{hue, sat, val});
         draw.setColorFilter(setColor, PorterDuff.Mode.MULTIPLY);

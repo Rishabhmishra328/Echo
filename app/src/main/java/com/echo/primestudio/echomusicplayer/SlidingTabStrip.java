@@ -18,7 +18,7 @@ class SlidingTabStrip extends LinearLayout {
     private static final int DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS = 0;
     private static final byte DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0x26;
     private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 3;
-    public static final int DEFAULT_SELECTED_INDICATOR_COLOR = Color.argb(255,209,52,91);
+    private static final int DEFAULT_SELECTED_INDICATOR_COLOR = Color.argb(255,209,52,91);
 
     private final int mBottomBorderThickness;
     private final Paint mBottomBorderPaint;
@@ -138,7 +138,7 @@ class SlidingTabStrip extends LinearLayout {
         return Color.rgb((int) r, (int) g, (int) b);
     }
 
-    private static class SimpleTabColorizer implements SlidingTabLayout.TabColorizer {
+    public static class SimpleTabColorizer implements SlidingTabLayout.TabColorizer {
         private int[] mIndicatorColors;
 
         @Override

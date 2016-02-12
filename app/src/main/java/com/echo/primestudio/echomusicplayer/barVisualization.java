@@ -89,7 +89,7 @@ public class barVisualization extends View {
             paths[i] = new Path();
 
             paths[i].moveTo(pathWidthTracker, 0);
-            paths[i].lineTo(pathWidthTracker, mBytes[i]);
+            paths[i].lineTo(pathWidthTracker, totalHeight);
 
             pathWidthTracker = emptyPathWidth + strokeWidth;
 

@@ -80,40 +80,9 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="false"
         android:layout_marginBottom="48dp"
-        android:background="@color/black"
+        android:layout_marginTop="48dp"
+        android:background="@color/white"
         android:visibility="gone">
-
-        <RelativeLayout
-            android:id="@+id/special_extra_app_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="51dp"
-            android:layout_below="@+id/album_art_special_view">
-
-            <ImageView
-                android:id="@+id/special_logo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_margin="4dp"
-                android:src="@drawable/echo_logo" />
-
-            <TextView
-                android:id="@+id/special_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="4dp"
-                android:layout_toRightOf="@+id/special_logo"
-                android:maxLength="36"
-                android:maxLines="1"
-                android:text="ABCD" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/pink" />
-
-        </RelativeLayout>
 
         <ImageView
             android:id="@+id/album_art_special_view"
@@ -121,34 +90,34 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:src="@drawable/echo_logo"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ListView
             android:id="@+id/list_view_artist_songs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/special_extra_app_bar"
-            android:visibility="gone" />
+            android:layout_below="@id/album_art_special_view"
+            android:visibility="gone"/>
 
         <ListView
             android:id="@+id/list_view_album_songs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/special_extra_app_bar"
+            android:layout_below="@id/album_art_special_view"
             android:visibility="gone" />
 
         <ListView
             android:id="@+id/list_view_genre_songs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/special_extra_app_bar"
+            android:layout_below="@id/album_art_special_view"
             android:visibility="gone" />
 
         <ListView
             android:id="@+id/list_view_playlist_songs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/special_extra_app_bar"
+            android:layout_below="@id/album_art_special_view"
             android:visibility="gone" />
 
     </RelativeLayout>
@@ -158,7 +127,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone">
 
         <RelativeLayout
             android:id="@+id/time_tracker_now_playing_curtain"

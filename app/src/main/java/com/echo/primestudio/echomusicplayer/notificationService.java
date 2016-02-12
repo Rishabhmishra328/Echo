@@ -73,8 +73,6 @@ public class notificationService extends Service {
         RemoteViews bigViews = new RemoteViews(getPackageName(),R.layout.status_bar_expanded);
 
         // showing default album image
-        views.setViewVisibility(R.id.special_logo, View.VISIBLE);
-        views.setViewVisibility(R.id.special_logo, View.GONE);
         bigViews.setImageViewBitmap(R.id.album_art_notification,
                 BitmapFactory.decodeResource(getResources(), R.drawable.echo_logo));
 

@@ -17,7 +17,7 @@
             android:maxLength="48"
             android:maxLines="1"
             android:text="Song Name"
-            android:textColor="@color/cream"
+            android:textColor="@color/black"
             android:textSize="16dp" />
 
         <TextView
