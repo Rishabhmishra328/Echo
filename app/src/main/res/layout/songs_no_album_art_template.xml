@@ -17,7 +17,7 @@
             android:maxLength="48"
             android:maxLines="1"
             android:text="Song Name"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="16dp" />
 
         <TextView
@@ -28,7 +28,7 @@
             android:maxLength="40"
             android:maxLines="1"
             android:text="Song Name"
-            android:textColor="@color/pink"
+            android:textColor="@color/lightgrey"
             android:textSize="12dp" />
 
     </RelativeLayout>

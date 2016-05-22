@@ -115,7 +115,7 @@ public class songPopulator {
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
         ContentResolver cr =  context.getContentResolver();
-        final String[]columns={songPath,_Id, artist, track_name, albumId};
+        final String[]columns={songPath,_Id, artist, track_name, songPath, albumId};
 
         String where = MediaStore.Audio.Media.ALBUM_ID + "=" + checkingAlbumId ;
 
@@ -139,10 +139,11 @@ public class songPopulator {
         final String track_name = MediaStore.Audio.Media.TITLE;
         final String artist = MediaStore.Audio.Media.ARTIST;
         final String songPath = MediaStore.Audio.Media.DATA ;
+        final String albumID = MediaStore.Audio.Media.ALBUM_ID ;
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
         ContentResolver cr =  context.getContentResolver();
-        final String[]columns={artistId,_Id, artist, track_name, songPath};
+        final String[]columns={artistId,_Id, artist, track_name, songPath, albumID};
 
         String where = MediaStore.Audio.Media.ARTIST_ID + "=" + checkingArtistId ;
 
@@ -165,10 +166,11 @@ public class songPopulator {
         final String track_name = MediaStore.Audio.Media.TITLE;
         final String artist = MediaStore.Audio.Media.ARTIST;
         final String songPath = MediaStore.Audio.Media.DATA ;
+        final String albumID = MediaStore.Audio.Media.ALBUM_ID ;
         Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", Long.parseLong(checkingGenreId));
 
         ContentResolver cr =  context.getContentResolver();
-        final String[]columns={artist , _Id , artist , track_name , songPath};
+        final String[]columns={artist , _Id , artist , track_name , songPath, albumID};
 
         genreSongsCursor = cr.query( uri, columns, null, null, track_name );
 
@@ -190,10 +192,11 @@ public class songPopulator {
         final String track_name = MediaStore.Audio.Media.TITLE;
         final String artist = MediaStore.Audio.Media.ARTIST;
         final String songPath = MediaStore.Audio.Media.DATA ;
+        final String albumID = MediaStore.Audio.Media.ALBUM_ID ;
         Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", Long.parseLong(checkingPlaylistId));
 
         ContentResolver cr =  context.getContentResolver();
-        final String[]columns={artist , _Id , artist , track_name , songPath};
+        final String[]columns={artist , _Id , artist , track_name , songPath, albumID};
 
         playlistSongsCursor = cr.query( uri, columns, null, null, track_name );
 

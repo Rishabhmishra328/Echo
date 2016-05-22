@@ -7,33 +7,36 @@
         android:id="@+id/album_template_album_art"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/echo_logo"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:background="@drawable/echo_logo"
+        android:elevation="4dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:alpha="0.75"
         android:layout_alignBottom="@+id/album_template_album_art"
+        android:alpha="0.75"
+        android:elevation="6dp"
+        android:layout_marginBottom="4dp"
         android:background="?attr/selectableItemBackground"
         android:backgroundTint="@color/black">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#bb000000"/>
+            android:background="@color/grey" />
 
         <TextView
+            android:id="@+id/album_template_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:maxLength="20"
-            android:textSize="12dp"
-            android:id="@+id/album_template_album"
-            android:text="ALBUM NAME"
             android:layout_centerVertical="true"
             android:layout_margin="4dp"
-            android:textColor="@color/cream"/>
+            android:maxLength="20"
+            android:maxLines="1"
+            android:text="ALBUM NAME"
+            android:textColor="@color/lightgrey"
+            android:textSize="12dp" />
 
     </RelativeLayout>
 

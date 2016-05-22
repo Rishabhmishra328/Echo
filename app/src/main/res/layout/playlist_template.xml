@@ -16,7 +16,7 @@
             android:maxLines="1"
             android:maxLength="20"
             android:text="Playlist Name"
-            android:textColor="@color/black"
+            android:textColor="@color/lightgrey"
             android:layout_centerVertical="true"
             android:layout_margin="4dp"/>
 

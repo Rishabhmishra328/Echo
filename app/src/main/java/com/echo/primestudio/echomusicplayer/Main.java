@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -56,16 +55,17 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     public static Bitmap defaultAlbumArt;
     public static Typeface echoPrimaryTypeFace, echoSecondaryTypeFace;
     private static Toolbar appBar;
-    private ViewPager classificationPager;
+    private static ViewPager classificationPager;
     private SlidingTabLayout classificationTabs;
-    public static View special, navigationDrawer, nowPlayingCurtain, nowPlayingDescription ;
-    public static ListView artistSongList, albumSongList, genreSongList, playlistSongList , allSongsLV ;
-    public static ImageView albumArtSpecialList, playButton, nextButton, previousButton, repeatButton, shuffleButton, albumArtNowPlayingCurtain, playPauseNowPlayingDescription, specialAlbumArt;
-    public static TextView nowPlayingSongName, nowPlayingSongArtist, songNameNowPlayingDescription, songArtistNowPlayingDescription, currentTimeMin, currentTimeSec, maxTimeMin, maxTimeSec, currentTimeSeprator, totalTimeSeprator, timeSlash, songArtistAllSongsTemplate;
+    public static View special, navigationDrawer, nowPlayingCurtain, nowPlayingDescription;
+    public static ListView artistSongList, albumSongList, genreSongList, playlistSongList, allSongsLV;
+    public static ImageView albumArtSpecialList, playButton, nextButton, previousButton, repeatButton, shuffleButton, playPauseNowPlayingDescription, specialAlbumArt, albumArtNowPlayingCurtain, appBarLogo;
+    public static TextView nowPlayingSongName, nowPlayingSongArtist, songNameNowPlayingDescription, songArtistNowPlayingDescription, currentTimeMin, currentTimeSec, maxTimeMin, maxTimeSec, currentTimeSeprator, totalTimeSeprator;
     public static Cursor playlistListCursor, genreListCursor, albumListCursor, artistListCursor, currentCursor;
-    public static int repeat = 0, shuffle = 0, albumArtNowPlayingCurtainWidth = 0;
+    public static int repeat = 0, shuffle = 0, albumArtNowPlayingCurtainWidth = 0, lastCursorPosition, lastCursorSpecial;
     public static HashMap<Integer, String> map = new HashMap<>();
     public static Stack<songData> previousSongs = new Stack<>();
+    public static String lastCursorType;
     public static Visualizer songVisualizer;
     public static AudioManager audio;
     public SharedPreferences sharedPref;
@@ -75,7 +75,11 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     public static SeekBar seekBar;
     public static android.os.Handler seekHandler = new android.os.Handler();
     public static Window window;
-    public static barVisualization barViz;
+    public static int appColor = 345;
+
+    //Adapters
+    public static listAdapter allSongsAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +101,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         albumArtSpecialList = (ImageView) findViewById(R.id.album_art_special_view);
         currentTimeSeprator = (TextView) findViewById(R.id.current_time_separator_now_playing_curtain);
         totalTimeSeprator = (TextView) findViewById(R.id.total_time_separator_now_playing_curtain);
-        timeSlash = (TextView) findViewById(R.id.time_slash_now_playing_curtain);
         nowPlayingSongName = (TextView) findViewById(R.id.current_song_name_now_playing_curtain);
         songNameNowPlayingDescription = (TextView) findViewById(R.id.song_name_now_playing_description);
         songArtistNowPlayingDescription = (TextView) findViewById(R.id.song_artist_now_playing_description);
@@ -106,7 +109,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         maxTimeMin = (TextView) findViewById(R.id.total_time_min_now_playing_curtain);
         maxTimeSec = (TextView) findViewById(R.id.total_time_sec_now_playing_curtain);
         nowPlayingSongArtist = (TextView) findViewById(R.id.current_song_artist_now_playing_curtain);
-        songArtistAllSongsTemplate = (TextView) findViewById(R.id.all_songs_template_song_artist);
         playButton = (ImageView) findViewById(R.id.play_pause_now_playing_curtain);
         playPauseNowPlayingDescription = (ImageView) findViewById(R.id.play_pause_now_playing_description);
         nextButton = (ImageView) findViewById(R.id.next_now_playing_curtain);
@@ -114,13 +116,13 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         repeatButton = (ImageView) findViewById(R.id.repeat_now_playing_curtain);
         shuffleButton = (ImageView) findViewById(R.id.shuffle_now_playing_curtain);
         specialAlbumArt = (ImageView) findViewById(R.id.album_art_special_view);
+        appBarLogo = (ImageView) findViewById(R.id.app_bar_logo);
         albumArtNowPlayingCurtain = (ImageView) findViewById(R.id.album_art_now_playing_curtain);
         seekBar = (SeekBar) findViewById(R.id.seek_bar_now_playing_curtain);
-        barViz = (barVisualization) findViewById(R.id.barVisualization_now_playing_curtain);
 
-        //Initialisation
-        albumArtNowPlayingCurtainWidth = albumArtNowPlayingCurtain.getMaxWidth();
-
+        //Declaring Context static variable
+        Context appContext = getApplicationContext();
+        applicationContext = appContext;
 
         //Curtain Call
         nowPlayingDescription.setOnClickListener(new View.OnClickListener() {
@@ -134,11 +136,16 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         sharedPref = getPreferences(MODE_PRIVATE);
         sharedPreferencesEditor = sharedPref.edit();
 
-
+        //Adopting Values
         repeat = sharedPref.getInt("repeat", 0);
         shuffle = sharedPref.getInt("shuffle", 0);
-        lastSongData = new songData(sharedPref.getString("lastSongAlbumId", "N/A"), sharedPref.getString("lastSongArtist", "N/A"), sharedPref.getString("lastSongId", "N/A"), sharedPref.getString("lastSongName", "N/A"), sharedPref.getString("lastSongPath", "N/A"));
+        lastCursorType = sharedPref.getString("lastCursorType", "all");
+        lastCursorPosition = sharedPref.getInt("lastCursorPosition", 0);
+        lastCursorSpecial = sharedPref.getInt("lastCursorSpecial", 0);
 
+        //Retrieving Last Played
+        currentCursor = songPopulator.getTrackCursor(getApplicationContext());
+        lastPlayedSettings(lastCursorType, lastCursorSpecial, lastCursorPosition);
 
         //Shared Preferences Changes
         sharedPreferencesChanges();
@@ -152,18 +159,12 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         shuffleButton.setOnClickListener(this);
         playPauseNowPlayingDescription.setOnClickListener(this);
 
-
         //Application bar
         appBar = (Toolbar) findViewById(R.id.appBar);
         setSupportActionBar(appBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setHideOffset(0);
         window = getWindow();
-
-        //Declaring Context static variable
-        Context appContext = getApplicationContext();
-        applicationContext = appContext;
-
 
         //Audio Stream for volume
         AudioManager thisAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -186,16 +187,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         echoPrimaryTypeFace = Typeface.createFromAsset(getAssets(), "fonts/code_bold.otf");
         echoSecondaryTypeFace = Typeface.createFromAsset(getAssets(), "fonts/code_light.otf");
 //        changeFonts();
-
-        //Placing album art on curtain
-        Rect albumArtRectangle = new Rect();
-        albumArtNowPlayingCurtain.setTranslationX(150 - albumArtNowPlayingCurtain.getWidth());
-        albumArtNowPlayingCurtain.setTranslationY(albumArtNowPlayingCurtain.getWidth() - 150);
-        albumArtNowPlayingCurtain.setScaleX((float) 1.25);
-        albumArtNowPlayingCurtain.setScaleY((float) 1.25);
-//        albumArtNowPlayingCurtain.getDrawingRect(albumArtRectangle);
-//        albumArtTop.setX(albumArtRectangle.centerX());
-//        albumArtTop.setY(albumArtRectangle.centerY());
 
         //Call listener
         PhoneStateListener phoneStateListener = new PhoneStateListener() {
@@ -326,6 +317,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                     findViewById(R.id.play_pause_now_playing_curtain).setBackgroundResource(R.drawable.play);
                     findViewById(R.id.play_pause_now_playing_description).setBackgroundResource(R.drawable.play);
                     player.pause();
+                    albumArtNowPlayingCurtain.clearAnimation();
                 } else {
                     findViewById(R.id.play_pause_now_playing_curtain).setBackgroundResource(R.drawable.pause);
                     findViewById(R.id.play_pause_now_playing_description).setBackgroundResource(R.drawable.pause);
@@ -472,7 +464,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                         fragmentListView = (ListView) fragmentView.findViewById(R.id.all_songs_lv);
 
-                        listAdapter allSongsAdapter;
 
                         allSongsAdapter = new listAdapter(getContext(), songPopulator.getTrackCursor(getContext()));
                         fragmentListView.setAdapter(allSongsAdapter);
@@ -501,8 +492,21 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                                 slideUpDown();
 
+                                //Shared Preferences Changes
+                                lastCursorType = "all";
+                                lastCursorPosition = position;
+
+//                                //Change colors
+//                                for (int i = 0; i <= allSongsAdapter.getCount() - 1; i++) {
+//                                    TextView rowArtist = (TextView) allSongsAdapter.getView(i, view, parent).findViewById(R.id.all_songs_template_song_artist);
+//                                    rowArtist.setTextColor(Color.HSVToColor(new float[]{appColor, 0.75f, 0.75f}));
+//                                    Log.d("CLICK LISTENER", "\t" + i);
+//                                    allSongsAdapter.notifyDataSetChanged();
+//                                }
+
                             }
                         });
+
 
                         break;
 
@@ -510,16 +514,16 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                         fragmentView = inflater.inflate(R.layout.fragment_artist, container, false);
 
-                        fragmentGridView = (GridView) fragmentView.findViewById(R.id.artist_gv);
+                        fragmentListView = (ListView) fragmentView.findViewById(R.id.artist_lv);
 
                         gridArtistAdapter artistAdapter;
 
                         artistListCursor = songPopulator.getArtistCursor(getContext());
 
                         artistAdapter = new gridArtistAdapter(getContext(), artistListCursor);
-                        fragmentGridView.setAdapter(artistAdapter);
+                        fragmentListView.setAdapter(artistAdapter);
 
-                        fragmentGridView.setOnItemClickListener(new GridView.OnItemClickListener() {
+                        fragmentListView.setOnItemClickListener(new GridView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -539,6 +543,10 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 artistSongList.setAdapter(artistSongAdapter);
 
                                 albumArtSpecialList.setVisibility(View.GONE);
+
+                                //Shared Preferences Changes
+                                lastCursorType = "artist";
+                                lastCursorSpecial = position;
 
 
                                 slideFromRight();
@@ -565,6 +573,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 nowPlayingSongName.setText(getSong.getString(3));
                                 nowPlayingSongArtist.setText(getSong.getString(2));
 
+                                //Shared Preferences Changes
+                                lastCursorPosition = position;
 
                                 slideUpDown();
 
@@ -601,7 +611,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 Cursor tableCursor = songPopulator.getAlbumSongsCursor(getContext(), albumListCursor);
 
                                 listNoAlbumArtAdapter albumSongAdapter;
-
                                 albumSongAdapter = new listNoAlbumArtAdapter(getContext(), tableCursor);
                                 albumSongList.setAdapter(albumSongAdapter);
 
@@ -615,6 +624,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                     specialAlbumArt.setImageResource(R.drawable.echo_album_art);
                                 }
 
+                                //Shared Preferences Changes
+                                lastCursorType = "album";
+                                lastCursorSpecial = position;
 
                                 slideFromRight();
 
@@ -643,6 +655,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 nowPlayingSongArtist.setText(getSong.getString(2));
 
 
+                                //Shared Preferences Changes
+                                lastCursorPosition = position;
+
                                 slideUpDown();
 
                             }
@@ -655,16 +670,16 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                         fragmentView = inflater.inflate(R.layout.fragment_genre, container, false);
 
-                        fragmentGridView = (GridView) fragmentView.findViewById(R.id.genre_gv);
+                        fragmentListView = (ListView) fragmentView.findViewById(R.id.genre_lv);
 
                         gridGenreAdapter genreAdapter;
 
                         genreListCursor = songPopulator.getGenreCursor(getContext());
 
                         genreAdapter = new gridGenreAdapter(getContext(), genreListCursor);
-                        fragmentGridView.setAdapter(genreAdapter);
+                        fragmentListView.setAdapter(genreAdapter);
 
-                        fragmentGridView.setOnItemClickListener(new GridView.OnItemClickListener() {
+                        fragmentListView.setOnItemClickListener(new GridView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -685,6 +700,10 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 genreSongList.setAdapter(genreAdapter);
 
                                 albumArtSpecialList.setVisibility(View.GONE);
+
+                                //Shared Preferences Changes
+                                lastCursorType = "genre";
+                                lastCursorSpecial = position;
 
                                 slideFromRight();
 
@@ -711,6 +730,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                                 nowPlayingSongName.setText(getSong.getString(3));
                                 nowPlayingSongArtist.setText(getSong.getString(2));
 
+
+                                //Shared Preferences Changes
+                                lastCursorPosition = position;
 
                                 slideUpDown();
 
@@ -754,6 +776,10 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                                 albumArtSpecialList.setVisibility(View.VISIBLE);
 
+                                //Shared Preferences Changes
+                                lastCursorType = "playlist";
+                                lastCursorSpecial = position;
+
                                 slideFromRight();
 
                             }
@@ -778,6 +804,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                                 nowPlayingSongName.setText(getSong.getString(3));
                                 nowPlayingSongArtist.setText(getSong.getString(2));
+
+                                //Shared Preferences Changes
+                                lastCursorPosition = position;
 
                                 slideUpDown();
 
@@ -935,12 +964,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         //Putting in changes in shared Preferences
         sharedPreferencesEditor.putInt("repeat", repeat);
         sharedPreferencesEditor.putInt("shuffle", shuffle);
-        sharedPreferencesEditor.putString("lastSongPath", lastSongData.getSongPath());
-        sharedPreferencesEditor.putString("lastSongId", lastSongData.getSongId());
-        sharedPreferencesEditor.putString("lastSongName", lastSongData.getSongName());
-        sharedPreferencesEditor.putString("lastSongAlbumId", lastSongData.getSongAlbumId());
-        sharedPreferencesEditor.putString("lastSongArtist", lastSongData.getSongArtist());
-
+        sharedPreferencesEditor.putInt("lastCursorPosition", lastCursorPosition);
+        sharedPreferencesEditor.putInt("lastCursorSpecial", lastCursorSpecial);
+        sharedPreferencesEditor.putString("lastCursorType", lastCursorType);
 
         //Committing shared preferences
         sharedPreferencesEditor.commit();
@@ -965,59 +991,44 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     public static void changeColor(int currentColor) {
 
+        appColor = currentColor;
+
         //Images color change
-        changeDrawableColor(playPauseNowPlayingDescription.getBackground(), currentColor, 0.75f, 0.55f);
-        changeDrawableColor(playButton.getBackground(), currentColor, 0.75f, 0.55f);
+//        changeDrawableColor(playPauseNowPlayingDescription.getBackground(), currentColor, 0.75f, 0.55f);
+//        changeDrawableColor(playButton.getBackground(), currentColor, 0.75f, 0.55f);
         changeDrawableColor(nextButton.getBackground(), currentColor, 0.8f, 0.8f);
         changeDrawableColor(previousButton.getBackground(), currentColor, 0.8f, 0.8f);
+//        changeDrawableColor(repeatButton.getBackground(), currentColor, 0.8f, 0.8f);
+//        changeDrawableColor(shuffleButton.getBackground(), currentColor, 0.8f, 0.8f);
+        changeDrawableColor(appBarLogo.getBackground(), currentColor, 0.75f, 0.9f);
 
 
         //Text color change
-        nowPlayingSongName.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.6f}));
+//        nowPlayingSongName.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.6f}));
 //        songNameNowPlayingDescription.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.6f}));
-        nowPlayingSongArtist.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.5f, 0.6f}));
-        songArtistNowPlayingDescription.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.5f}));
+        nowPlayingSongArtist.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.75f}));
+        songArtistNowPlayingDescription.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.9f, 0.75f}));
         currentTimeMin.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.4f, 0.6f}));
         currentTimeSec.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.4f, 0.6f}));
         maxTimeMin.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.4f, 0.6f}));
         maxTimeSec.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.4f, 0.6f}));
         currentTimeSeprator.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.4f, 0.6f}));
         totalTimeSeprator.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.4f, 0.6f}));
-        timeSlash.setTextColor(Color.HSVToColor(new float[]{currentColor, 0.4f, 0.6f}));
+
+        //Now Playing Curtain for main controls tint
+        nowPlayingCurtain.setBackgroundColor(Color.HSVToColor(new float[]{currentColor, 0.9f, 0.9f}));
+
+        //Status bar color
+        window.setStatusBarColor(Color.HSVToColor(new float[]{currentColor, 0.9f, 0.9f}));
 
         //List color changes
         SlidingTabLayout.setSelectedIndicatorColors(Color.HSVToColor(new float[]{currentColor, 0.8f, 0.8f}));
-
-        //Application morphing
-        appBar.setBackgroundColor(Color.HSVToColor(new float[]{currentColor, 0.5f, 0.9f}));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.6f}));
         }
 
-        //All songs Thumb
-//        allSongsLV.setCacheColorHint(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.6f}));
-
-
-        //Visualization color
-        barVisualization.barVizPaint.setColor(Color.HSVToColor(new float[]{currentColor, 0.6f, 0.8f}));
-        barVisualization.barVizPaint.setAlpha(150);
-
-        //Main marker color
-
-
-        //Changing Template Color
-        if (songArtistAllSongsTemplate == null)
-            Log.d("songArtist all songs", "is NULL");
-        else
-            songArtistAllSongsTemplate.setTextColor(Color.HSVToColor(255, new float[]{currentColor, 0.6f, 0.8f}));
-
-
-        //Gradient color change
-        GradientDrawable gradDrawable = new GradientDrawable(GradientDrawable.Orientation.TR_BL, new int[]{Color.HSVToColor(new float[]{currentColor, 0.75f, 0.75f}), Color.HSVToColor(new float[]{currentColor, 0f, 1f})});
-        gradDrawable.setCornerRadius(0.5f);
-        nowPlayingCurtain.setBackground(gradDrawable);
 
         //SeekBar color change
         seekBar.getProgressDrawable().setColorFilter(Color.HSVToColor(new float[]{currentColor, 0.75f, 0.55f}), PorterDuff.Mode.MULTIPLY);
@@ -1030,6 +1041,46 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
         int setColor = Color.HSVToColor(new float[]{hue, sat, val});
         draw.setColorFilter(setColor, PorterDuff.Mode.MULTIPLY);
+
+    }
+
+    public static void lastPlayedSettings(String cursor, int special, int position) {
+
+        switch (cursor) {
+            case "all":
+                currentCursor = songPopulator.getTrackCursor(applicationContext);
+                currentCursor.moveToPosition(position);
+                lastSongData = new songData(currentCursor.getString(5),currentCursor.getString(2),currentCursor.getString(1),currentCursor.getString(3),currentCursor.getString(4));
+                break;
+            case "artist":
+                currentCursor = songPopulator.getArtistCursor(applicationContext);
+                currentCursor.moveToPosition(special);
+                currentCursor = songPopulator.getArtistSongsCursor(applicationContext, currentCursor);
+                currentCursor.moveToPosition(position);
+                lastSongData = new songData(currentCursor.getString(5),currentCursor.getString(2),currentCursor.getString(1),currentCursor.getString(3),currentCursor.getString(4));
+                break;
+            case "album":
+                currentCursor = songPopulator.getAlbumCursor(applicationContext);
+                currentCursor.moveToPosition(special);
+                currentCursor = songPopulator.getAlbumSongsCursor(applicationContext, currentCursor);
+                currentCursor.moveToPosition(position);
+                lastSongData = new songData(currentCursor.getString(5),currentCursor.getString(2),currentCursor.getString(1),currentCursor.getString(3),currentCursor.getString(4));
+                break;
+            case "genre":
+                currentCursor = songPopulator.getGenreCursor(applicationContext);
+                currentCursor.moveToPosition(special);
+                currentCursor = songPopulator.getGenreSongsCursor(applicationContext, currentCursor);
+                currentCursor.moveToPosition(position);
+                lastSongData = new songData(currentCursor.getString(5),currentCursor.getString(0),currentCursor.getString(1),currentCursor.getString(3),currentCursor.getString(4));
+                break;
+            case "playlist":
+                currentCursor = songPopulator.getPlaylistCursor(applicationContext);
+                currentCursor.moveToPosition(special);
+                currentCursor = songPopulator.getPlaylistSongsCursor(applicationContext, currentCursor);
+                currentCursor.moveToPosition(position);
+                lastSongData = new songData(currentCursor.getString(5),currentCursor.getString(0),currentCursor.getString(1),currentCursor.getString(3),currentCursor.getString(4));
+                break;
+        }
 
     }
 

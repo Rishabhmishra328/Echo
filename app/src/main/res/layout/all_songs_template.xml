@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item"
-    android:backgroundTintMode="multiply"
-    android:backgroundTint="@color/orange"
-    android:background="?attr/selectableItemBackground">
+    android:layout_height="@dimen/list_item">
 
     <ImageView
         android:id="@+id/all_songs_template_song_album_art"
@@ -26,7 +23,7 @@
             android:maxLength="48"
             android:maxLines="1"
             android:text="Song Name"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="16dp" />
 
         <TextView
@@ -37,7 +34,7 @@
             android:maxLength="40"
             android:maxLines="1"
             android:text="Song Name"
-            android:textColor="@color/pink"
+            android:textColor="@color/lightgrey"
             android:textSize="12dp" />
 
     </RelativeLayout>

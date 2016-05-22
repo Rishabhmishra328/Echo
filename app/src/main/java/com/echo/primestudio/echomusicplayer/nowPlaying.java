@@ -1,38 +1,16 @@
 package com.echo.primestudio.echomusicplayer;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.RemoteViews;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -90,64 +68,66 @@ public class nowPlaying extends Activity {
                 Main.albumArtNowPlayingCurtain.setImageResource(R.drawable.echo_album_art);
             }
 
-            //SeekUpdation
-            Main.seekBar.setMax(Main.player.getDuration());
+                //SeekUpdation
+                Main.seekBar.setMax(Main.player.getDuration());
 
-            int maxTime = Main.player.getDuration();
-            maxTime = maxTime / 1000;
-            Main.maxTimeMin.setText(String.format("%02d", (maxTime / 60)));
-            Main.maxTimeSec.setText(String.format("%02d", (maxTime % 60)));
-
-
-            //Removing from Hash Map
-            Main.map.remove(Integer.parseInt(trackId));
+                int maxTime = Main.player.getDuration();
+                maxTime = maxTime / 1000;
+                Main.maxTimeMin.setText(String.format("%02d", (maxTime / 60)));
+                Main.maxTimeSec.setText(String.format("%02d", (maxTime % 60)));
 
 
-        }
+                //Removing from Hash Map
+                Main.map.remove(Integer.parseInt(trackId));
 
 
-        currentSongId = trackId;
-
-        //Player Configuration
-        Main.player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                Main.playButton.setBackgroundResource(R.drawable.play);
-                Main.playPauseNowPlayingDescription.setBackgroundResource(R.drawable.play);
-                nowPlaying.next(context, Main.currentCursor);
             }
-        });
 
 
-        Main.lastSongData.setSongPath(songPath);
-        Main.lastSongData.setSongId(trackId);
-        Main.lastSongData.setSongName(trackName);
-        Main.lastSongData.setSongArtist(trackArtist);
-        Main.lastSongData.setSongAlbumId(albumId);
+            currentSongId = trackId;
 
-        if (!fromPrevious) {
-            Main.previousSongs.push(new songData(albumId, trackArtist, trackId, trackName, songPath));
-            Log.d("STACK", "PUSHED" + trackName);
-        }
+            //Player Configuration
+            Main.player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    Main.playButton.setBackgroundResource(R.drawable.play);
+                    Main.playPauseNowPlayingDescription.setBackgroundResource(R.drawable.play);
+                    nowPlaying.next(context, Main.currentCursor);
+                }
+            });
+
+
+            Main.lastSongData.setSongPath(songPath);
+            Main.lastSongData.setSongId(trackId);
+            Main.lastSongData.setSongName(trackName);
+            Main.lastSongData.setSongArtist(trackArtist);
+            Main.lastSongData.setSongAlbumId(albumId);
+
+            if (!fromPrevious) {
+                Main.previousSongs.push(new songData(albumId, trackArtist, trackId, trackName, songPath));
+                Log.d("STACK", "PUSHED" + trackName);
+            }
 //
 //        if (fromPrevious){
 //            Main.previousSongs.push(Main.lastSongData);
 //        }
 
-        //Seek Update
-        Main.seekUpdation();
+            //Seek Update
+            Main.seekUpdation();
 
-        //Changing Colors
-        if (songPopulator.getAlbumArt(context, albumId) != null) {
-            Main.changeColor(getAlbumArtColor(BitmapFactory.decodeFile(songPopulator.getAlbumArt(context, albumId))));
-        } else {
-            Main.changeColor(345);
-        }
-
-        //Set notification
-
-
-        Log.d("NOWPLAYING", "PLAY");
+            //Changing Colors
+            if (songPopulator.getAlbumArt(context, albumId) != null) {
+                try {
+                    Log.d("ALBUMID",albumId);
+                    Main.changeColor(getAlbumArtColor(BitmapFactory.decodeFile(songPopulator.getAlbumArt(context, albumId))));
+                }catch(Exception e){
+                    e.printStackTrace();
+                    Main.changeColor(345);
+                }
+            } else {
+                Main.changeColor(345);
+            }
+            Log.d("NOWPLAYING", "PLAY");
 
 
     }
@@ -380,91 +360,25 @@ public class nowPlaying extends Activity {
 
         final Palette albumPalette = Palette.generate(albumArt);
 
-        Palette.Swatch albumSwatch = albumPalette.getVibrantSwatch() ;
+        Palette.Swatch albumSwatch = albumPalette.getVibrantSwatch();
 
-        if (albumSwatch == null){
-        albumSwatch = albumPalette.getLightVibrantSwatch();
-        }else if (albumSwatch == null){
+        if (albumSwatch == null) {
+            albumSwatch = albumPalette.getLightVibrantSwatch();
+        } else if (albumSwatch == null) {
             albumSwatch = albumPalette.getDarkVibrantSwatch();
-        }else if (albumSwatch == null) {
+        } else if (albumSwatch == null) {
             albumSwatch = albumPalette.getMutedSwatch();
-        }else if (albumSwatch == null){
-            return majorColor = 345 ;
+        } else if (albumSwatch == null) {
+            return majorColor = 345;
         }
 
-        if (albumSwatch !=null) {
+        if (albumSwatch != null) {
             float[] hsl = albumSwatch.getHsl();
 
             majorColor = (int) hsl[0];
 
             Log.d("COLOR :", "\t" + Integer.toString(majorColor));
         }
-
-//        Palette.PaletteAsyncListener paletteListener = new Palette.PaletteAsyncListener() {
-//            public void onGenerated(Palette palette) {
-//                // access palette colors here
-//            }
-//        };
-
-
-
-
-
-
-//        HashMap<Integer, Integer> hueFrequency = new HashMap<>();
-//
-//        for (int i = 0; i < albumArt.getWidth(); i = i + (albumArt.getWidth() / 100)) {
-//            for (int j = 0; i < albumArt.getHeight(); i = i + (albumArt.getHeight() / 100)) {
-//                int pixel = albumArt.getPixel(i, j);
-//
-//                int red = (pixel >> 16) & 0xff;
-//                int green = (pixel >> 8) & 0xff;
-//                int blue = (pixel) & 0xff;
-//
-//                float[] hsvValue = new float[3];
-//
-//                Color.RGBToHSV(red, green, blue, hsvValue);
-//
-//                Integer hueCheck = hueFrequency.get(hsvValue[0]);
-//                float hueSaturation = hsvValue[1];
-//                float hueValue = hsvValue[2];
-//
-//                Log.d("COLOR","HUE" + "\t" + hsvValue[0] + "\t" + "SATURATION" + "\t" + hsvValue[1] + "\t" + "VALUE" + "\t" + hsvValue[2]) ;
-//
-//
-//                if ( (hueValue >= 0.1) && (hueSaturation >= 0.4 || hueSaturation <= 0.6)) {
-//                    if (hueCheck == null) {
-//                        hueFrequency.put((int) hsvValue[0], 1);
-//                    } else {
-//                        if (hueSaturation >= 0.5){
-//                            hueFrequency.put((int) hsvValue[0], hueCheck + 10);
-//                        }
-//                        hueFrequency.put((int) hsvValue[0], hueCheck + 1);
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//
-//        Map.Entry<Integer, Integer> maxHue = null;
-//
-//        for (Map.Entry<Integer, Integer> tempEntry : hueFrequency.entrySet()) {
-//
-//            if (maxHue == null || tempEntry.getValue().compareTo(maxHue.getValue()) > 0) {
-//                maxHue = tempEntry;
-//            }
-//
-//        }
-//
-//        if (maxHue == null){
-//            majorColor = 48 ;
-//        }else{
-//            majorColor = maxHue.getKey();
-//        }
-//
-//
-//
 
         return majorColor;
 

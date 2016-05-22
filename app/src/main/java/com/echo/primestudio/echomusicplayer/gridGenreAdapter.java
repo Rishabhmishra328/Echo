@@ -30,8 +30,6 @@ public class gridGenreAdapter extends CursorAdapter {
         songGenre.setText( cursor.getString(1) );
 //        songGenre.setTypeface(Main.echoPrimaryTypeFace);
 
-
-
     }
 
     @Override
